@@ -9,13 +9,28 @@ use App\Models\User;
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 
 class AuthController extends Controller {
 
     public function register(UserRegisterRequest $request, User $user){
-        $userArr = $request->all();
-        $userObj = $user->save($userArr);
+        $userArr = $request->except(['profileImage']);
+        $file = $request->file('profileImage');
+
+        // Generate a unique file name
+        $fileName = uniqid('', true) . '.' . $file->getClientOriginalExtension();
+
+        // Upload the file to S3
+        Storage::disk('s3')->put($fileName, file_get_contents($file), 'public');
+
+        // Get the URL of the uploaded file
+        $fileUrl = Storage::disk('s3')->url($fileName);
+
+        $userArr['profileImage'] = $fileUrl;
+        $userArr['name'] = $request->input("name");
+
+        $userObj = $user->saveNewUser($userArr);
 
         if(!$userObj){
             return returnErrorResponse('Unable to register user. Please try again later');
@@ -49,10 +64,8 @@ class AuthController extends Controller {
 
         $userObj->tokens()->delete();
         $authToken = $userObj->createToken('authToken')->plainTextToken;
-        $returnArr = $userObj->getResponseArr();
-        $returnArr['auth_token'] = $authToken;
 
-        return returnSuccessResponse('User logged in successfully', $returnArr);
+        return returnSuccessResponse('User logged in successfully', $authToken);
     }
 
 

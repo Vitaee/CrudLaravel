@@ -6,6 +6,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Hash;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
@@ -20,6 +21,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'profileImage',
         'password',
     ];
 
@@ -42,13 +44,9 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function getResponseArr()
+    public function saveNewUser($inputArr)
     {
-        $returnArr = [
-            'user_id' => $this->id,
-            'name' => $this->first_name,
-            'email' => $this->email,
-        ];
-        return $returnArr;
+        $inputArr['password'] = Hash::make($inputArr['password']);
+        return self::create($inputArr);
     }
 }
