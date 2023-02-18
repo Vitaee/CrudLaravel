@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserLoginRequest;
 use App\Http\Requests\UserRegisterRequest;
+use App\Jobs\S3FileUploadJob;
 use App\Models\User;
 
 use Illuminate\Support\Facades\Auth;
@@ -18,23 +19,18 @@ class AuthController extends Controller {
         $userArr = $request->except(['profileImage']);
         $file = $request->file('profileImage');
 
-        // Generate a unique file name
-        $fileName = uniqid('', true) . '.' . $file->getClientOriginalExtension();
-
-        // Upload the file to S3
-        Storage::disk('s3')->put($fileName, file_get_contents($file), 'public');
-
-        // Get the URL of the uploaded file
-        $fileUrl = Storage::disk('s3')->url($fileName);
-
-        $userArr['profileImage'] = $fileUrl;
-        $userArr['name'] = $request->input("name");
-
+        $userArr['profileImage'] = "empty";
         $userObj = $user->saveNewUser($userArr);
+
 
         if(!$userObj){
             return returnErrorResponse('Unable to register user. Please try again later');
         }
+
+        $job = new S3FileUploadJob($file, $userObj->id);
+        dispatch($job)->onQueue('s3_file_upload');
+
+        //S3FileUploadJob::dispatch($file, $userObj->id)->delay(now()->addSecond(2));
 
         $authToken = $userObj->createToken('authToken')->plainTextToken;
         $userObj->auth_token = $authToken;

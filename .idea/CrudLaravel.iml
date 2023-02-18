@@ -120,6 +120,16 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/psr/container" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/psr/event-dispatcher" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/league/flysystem-aws-s3-v3" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/enqueue/amqp-tools" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/enqueue/dsn" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/enqueue/amqp-ext" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/queue-interop/queue-interop" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/queue-interop/amqp-interop" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/serializer" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/php-amqplib/php-amqplib" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/paragonie/constant_time_encoding" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/paragonie/random_compat" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/phpseclib/phpseclib" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
