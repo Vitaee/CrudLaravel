@@ -16,6 +16,7 @@ class UserRegisterRequest extends FormRequest {
             'email' => 'required|email|unique:users,email,NULL,id',
             'name' => 'required',
             'password' => 'required',
+            'profileImage' => 'mimes:jpeg,png,jpg|max:2048'
         ];
     }
 
@@ -30,7 +31,8 @@ class UserRegisterRequest extends FormRequest {
             'password.required' => 'Please enter the PIN',
             'password.max' => 'Please enter maximum 200 characters',
 
-            'image.max'  => 'The image may not be greater than 2 MB'
+            'profileImage.max'  => 'The image may not be greater than 2 MB',
+            'profileImage.mimes' => 'Thie file type should be jpeg|png|jpg'
         ];
     }
 

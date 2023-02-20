@@ -4,8 +4,10 @@ use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Storage;
 
 class S3FileUploadJob implements ShouldQueue
@@ -35,16 +37,17 @@ class S3FileUploadJob implements ShouldQueue
      */
     public function handle()
     {
-        $fileName = uniqid('', true) . '.' . $this->file->getClientOriginalExtension();
+        $fileData = $this->file;
+        $fileContents = base64_decode($fileData['data']);
+        $fileName = uniqid('', true) . '.' . $fileData['extension'];
 
-        // Upload the file to S3
-        Storage::disk('s3')->put($fileName, file_get_contents($this->file), 'public');
+        // Upload the file contents to S3
+        Storage::disk('s3')->put($fileName, $fileContents, 'public');
 
         // Get the URL of the uploaded file
         $fileUrl = Storage::disk('s3')->url($fileName);
 
-        $userObj = new User;
-        $userObj->find($this->user_id);
+        $userObj = User::find($this->userId);
         $userObj->profileImage = $fileUrl;
         $userObj->save();
     }
@@ -53,4 +56,7 @@ class S3FileUploadJob implements ShouldQueue
     {
         print_r($exception);
     }
+
+
+
 }

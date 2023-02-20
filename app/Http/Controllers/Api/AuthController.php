@@ -19,6 +19,14 @@ class AuthController extends Controller {
         $userArr = $request->except(['profileImage']);
         $file = $request->file('profileImage');
 
+        $fileData = [
+            'name' => $file->getClientOriginalName(),
+            'extension'=> $file->getClientOriginalExtension(),
+            'type' => $file->getMimeType(),
+            'data' => base64_encode(file_get_contents($file->getRealPath()))
+        ];
+
+
         $userArr['profileImage'] = "empty";
         $userObj = $user->saveNewUser($userArr);
 
@@ -27,10 +35,9 @@ class AuthController extends Controller {
             return returnErrorResponse('Unable to register user. Please try again later');
         }
 
-        $job = new S3FileUploadJob($file, $userObj->id);
-        dispatch($job)->onQueue('s3_file_upload');
 
-        //S3FileUploadJob::dispatch($file, $userObj->id)->delay(now()->addSecond(2));
+
+        S3FileUploadJob::dispatch($fileData, $userObj->id)->afterResponse();
 
         $authToken = $userObj->createToken('authToken')->plainTextToken;
         $userObj->auth_token = $authToken;
