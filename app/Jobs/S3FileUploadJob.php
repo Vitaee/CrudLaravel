@@ -1,7 +1,5 @@
 <?php
-
 namespace App\Jobs;
-
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -9,23 +7,32 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Storage;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-
 
 class S3FileUploadJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    private $file;
-    private $user_id;
+    protected $file;
+    protected $userId;
 
-    public function __construct(UploadedFile $file, $user_id)
+    /**
+     * Create a new job instance.
+     *
+     * @param  $file
+     * @param  int  $userId
+     * @return void
+     */
+    public function __construct($file, $userId)
     {
         $this->file = $file;
-        $this->user_id = $user_id;
+        $this->userId = $userId;
     }
 
-
+    /**
+     * Execute the job.
+     *
+     * @return void
+     */
     public function handle()
     {
         $fileName = uniqid('', true) . '.' . $this->file->getClientOriginalExtension();
