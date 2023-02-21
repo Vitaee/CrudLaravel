@@ -34,8 +34,8 @@ jobs:
           cd /opt
           git clone https://github.com/Vitaee/CrudLaravel.git
           cd CrudLaravel
-          /usr/local/bin/aws --region us-east-1 s3 cp s3://awsbucketvitae/laravel_crud/.env .
-          /usr/local/bin/aws --region us-east-1 s3 cp s3://awsbucketvitae/laravel_crud/.env.test .
+          aws --region us-east-1 s3 cp s3://awsbucketvitae/laravel_crud/.env .
+          aws --region us-east-1 s3 cp s3://awsbucketvitae/laravel_crud/.env.test .
           sudo docker compose run --rm app composer install --no-interaction --prefer-dist --optimize-autoloader
     - name: Run tests
       uses: docker://php:8.1
