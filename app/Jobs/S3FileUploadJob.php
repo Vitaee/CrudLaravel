@@ -42,7 +42,7 @@ class S3FileUploadJob implements ShouldQueue
         $fileName = uniqid('', true) . '.' . $fileData['extension'];
 
         // Upload the file contents to S3
-        Storage::disk('s3')->put($fileName, $fileContents, 'public');
+        Storage::disk('s3')->put($fileName, $fileContents);
 
         // Get the URL of the uploaded file
         $fileUrl = Storage::disk('s3')->url($fileName);

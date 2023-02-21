@@ -8,6 +8,7 @@ use App\Http\Requests\UserRegisterRequest;
 use App\Jobs\S3FileUploadJob;
 use App\Models\User;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
@@ -15,7 +16,8 @@ use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller {
 
-    public function register(UserRegisterRequest $request, User $user){
+    public function register(UserRegisterRequest $request, User $user): JsonResponse
+    {
         $userArr = $request->except(['profileImage']);
         $file = $request->file('profileImage');
 
@@ -37,7 +39,7 @@ class AuthController extends Controller {
 
 
 
-        S3FileUploadJob::dispatch($fileData, $userObj->id)->afterResponse();
+        S3FileUploadJob::dispatch($fileData, $userObj->id)->delay(now()->addSeconds(10));
 
         $authToken = $userObj->createToken('authToken')->plainTextToken;
         $userObj->auth_token = $authToken;
@@ -46,7 +48,7 @@ class AuthController extends Controller {
 
     }
 
-    public function login(UserLoginRequest $request)
+    public function login(UserLoginRequest $request): JsonResponse
     {
         $inputArr = $request->all();
         $userObj = User::where('email', $inputArr['email'])->first();
