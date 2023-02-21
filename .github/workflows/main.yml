@@ -20,11 +20,10 @@ jobs:
         host: ${{ secrets.SERVER_HOST }}
         username: ${{ secrets.SERVER_USERNAME }}
         password: ${{ secrets.SERVER_PASSWORD }}
-        port: ${{ secrets.SERVER_PORT }}
         script: |
           cd /opt
-          git clone https://github.com/<your-repo>.git
-          cd <your-repo>
+          git clone https://github.com/Vitaee/CrudLaravel.git
+          cd CrudLaravel
           sudo apt-get update
           sudo apt-get install -y unzip zip
           sudo apt-get install -y libzip-dev
@@ -50,7 +49,7 @@ jobs:
       with:
         entrypoint: sh
         args: >
-           -c "cd /opt/<your-repo> 
+           -c "cd /opt/CrudLaravel
                 && php artisan test"
     - name: Deploy to Production
       uses: appleboy/ssh-action@master
@@ -59,7 +58,6 @@ jobs:
         host: ${{ secrets.SERVER_HOST }}
         username: ${{ secrets.SERVER_USERNAME }}
         password: ${{ secrets.SERVER_PASSWORD }}
-        port: ${{ secrets.SERVER_PORT }}
         script: |
-          cd /opt/<your-repo>
+          cd CrudLaravel
           sudo docker-compose up -d
