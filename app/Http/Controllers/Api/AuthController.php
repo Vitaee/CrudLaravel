@@ -39,8 +39,8 @@ class AuthController extends Controller {
 
 
 
-        S3FileUploadJob::dispatch($fileData, $userObj->id)->delay(now()->addSeconds(10));
-
+        //S3FileUploadJob::dispatch($fileData, $userObj->id)->delay(now()->addSeconds(10));
+        S3FileUploadJob::dispatch($fileData, $userObj->id)->afterResponse();
         $authToken = $userObj->createToken('authToken')->plainTextToken;
         $userObj->auth_token = $authToken;
 
