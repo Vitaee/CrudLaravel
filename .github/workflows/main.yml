@@ -8,9 +8,6 @@ defaults:
   run:
     shell: bash
     working-directory: ${{ github.workspace }}
-    path:
-      - /usr/bin
-      - /usr/local/bin
 
 
 
