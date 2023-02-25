@@ -1,7 +1,10 @@
 <?php
 
 use App\Http\Controllers\Api\AuthController;
+use App\Http\Controllers\Api\CityController;
+use App\Http\Controllers\Api\DirectionController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\ProvinceController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -26,6 +29,24 @@ Route::prefix('v1')->namespace('Api')->group( function (){
             Route::get('/', [UserController::class, 'getProfile'])->name('user');
         });
 
+    });
+
+    Route::prefix('city')->name('city.')->group( function () {
+        Route::post('/', [CityController::class, 'createCity'])->name('createCity');
+        Route::get('/provinces', [CityController::class, 'getCityProvinces'])->name('getCityProvinces');
+        Route::get('/', [CityController::class, 'getCities'])->name('getCities');
+    });
+
+
+    Route::prefix('province')->name('province.')->group( function (){
+        Route::post('/', [ProvinceController::class, 'createProvince'])->name('createProvince');
+        Route::get('/', [ProvinceController::class, 'getProvince'])->name('getProvinces');
+        Route::get('/direction-way', [ProvinceController::class, 'getProvinceDirections'])->name('getProvinceDirections');
+    });
+
+    Route::prefix('direction')->name('direction.')->group( function (){
+        Route::post('/', [DirectionController::class, 'createDirection'])->name('createDirection');
+        Route::get('/', [DirectionController::class, 'getDirection'])->name('getDirection');
     });
 
 
