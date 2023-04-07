@@ -31,9 +31,7 @@ jobs:
         password: ${{ secrets.SERVER_PASSWORD }}
         script: |
           sudo apt install -y awscli 
-          cd /opt
-          git clone https://github.com/Vitaee/CrudLaravel.git
-          cd CrudLaravel
+          cd /opt/CrudLaravel
           aws --region us-east-1 s3 cp s3://awsbucketvitae/laravel_crud/.env .
           aws --region us-east-1 s3 cp s3://awsbucketvitae/laravel_crud/.env.test .
           sudo docker compose run --rm app composer install --no-interaction --prefer-dist --optimize-autoloader
@@ -59,5 +57,5 @@ jobs:
         username: ${{ secrets.SERVER_USERNAME }}
         password: ${{ secrets.SERVER_PASSWORD }}
         script: |
-          cd CrudLaravel
+          cd /opt/CrudLaravel
           sudo docker-compose up -d
